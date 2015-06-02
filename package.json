@@ -1,0 +1,23 @@
+{
+  "name": "minjsapp",
+  "version": "0.0.1",
+  "description": "min js app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koh110/minjsapp.git"
+  },
+  "author": "koh110",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/koh110/minjsapp/issues"
+  },
+  "homepage": "https://github.com/koh110/minjsapp",
+  "devDependencies": {
+    "browser-sync": "latest",
+    "gulp": "latest"
+  }
+}
