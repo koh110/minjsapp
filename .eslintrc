@@ -1,0 +1,18 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "rules": {
+    "no-console": [1],
+    "no-unused-vars": [1, {"vars": "all", "args": "after-used"}],
+    "strict": [2, "global"],
+    "indent": [2, 2],
+    "quotes": [2, "single"],
+    "camelcase": [2, {"properties": "always"}],
+    "no-multi-spaces": [2],
+    "no-mixed-spaces-and-tabs": [2],
+    "space-before-blocks": [2, "always"]
+  }
+}

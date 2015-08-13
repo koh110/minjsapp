@@ -17,7 +17,15 @@
   },
   "homepage": "https://github.com/koh110/minjsapp",
   "devDependencies": {
-    "browser-sync": "latest",
-    "gulp": "latest"
+    "browser-sync": "*",
+    "eslint": "*",
+    "gulp": "*",
+    "gulp-babel": "*",
+    "gulp-concat": "*",
+    "gulp-eslint": "*",
+    "gulp-load-plugins": "*",
+    "gulp-pleeease": "*",
+    "gulp-plumber": "*",
+    "node-notifier": "*"
   }
 }
