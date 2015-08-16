@@ -4,7 +4,9 @@
   "description": "min js app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init": "npm install;bower install",
+    "start": "gulp"
   },
   "repository": {
     "type": "git",
@@ -17,15 +19,18 @@
   },
   "homepage": "https://github.com/koh110/minjsapp",
   "devDependencies": {
+    "bower": "*",
     "browser-sync": "*",
     "eslint": "*",
     "gulp": "*",
     "gulp-babel": "*",
     "gulp-concat": "*",
     "gulp-eslint": "*",
+    "gulp-inject": "*",
     "gulp-load-plugins": "*",
     "gulp-pleeease": "*",
     "gulp-plumber": "*",
+    "main-bower-files": "*",
     "node-notifier": "*"
   }
 }

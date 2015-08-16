@@ -1,0 +1,20 @@
+{
+  "name": "minjsapp",
+  "version": "0.0.0",
+  "homepage": "https://github.com/koh110/minjsapp",
+  "authors": [
+    "koh110 <kohta110@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "./app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4"
+  }
+}
