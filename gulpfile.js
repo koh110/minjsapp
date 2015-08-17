@@ -122,7 +122,8 @@ gulp.task('lint', function() {
 gulp.task('inject', function() {
   return gulp.src(config.html.injectTarget)
     .pipe($.inject(gulp.src(mainBowerFiles()), {
-      name: 'inject'
+      name: 'inject',
+      relative: true
     }))
     .pipe(gulp.dest('./app'));
 });
