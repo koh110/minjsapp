@@ -3,5 +3,5 @@
 # get started
 ```
 $ npm install
-$ bower install
+$ npm run setup
 ```

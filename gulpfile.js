@@ -1,14 +1,14 @@
 'use strict';
 
-var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
-var mainBowerFiles = require('main-bower-files');
-var browserSync =require('browser-sync');
-var notifier = require('node-notifier');
-var runSequence = require('run-sequence');
+const gulp = require('gulp');
+const $ = require('gulp-load-plugins')();
+const mainBowerFiles = require('main-bower-files');
+const browserSync =require('browser-sync');
+const notifier = require('node-notifier');
+const runSequence = require('run-sequence');
 
 // 設定
-var config = {
+const config = {
   server : {
     port: 8282
   },
@@ -17,7 +17,7 @@ var config = {
   },
   js: {
     output: {
-      directory: './app',
+      directory: './app/dist',
       fileName: 'app.js'
     },
     files: [
@@ -26,11 +26,11 @@ var config = {
   },
   css: {
     output: {
-      directory: './app',
+      directory: './app/dist',
       fileName: 'style.css'
     },
     files: [
-      './app/css/*.css'
+      './app/styles/*.css'
     ],
     prefixer: [
       'last 1 versions',
@@ -43,9 +43,9 @@ var config = {
 };
 
 // エラー時のnotify表示
-var notify = function(taskName, error) {
-  var title = '[task]' + taskName + ' ' + error.plugin;
-  var errorMsg = 'error: ' + error.message;
+const notify = (taskName, error) => {
+  const title = '[task]' + taskName + ' ' + error.plugin;
+  const errorMsg = 'error: ' + error.message;
   console.error(title + '\n' + errorMsg);
   notifier.notify({
     title: title,
@@ -55,7 +55,7 @@ var notify = function(taskName, error) {
 };
 
 // サーバ起動
-gulp.task('server', function() {
+gulp.task('server', () => {
   browserSync({
     port: config.server.port,
     server: {
@@ -66,16 +66,16 @@ gulp.task('server', function() {
 });
 
 // サーバ再起動
-gulp.task('reloadServer', function () {
+gulp.task('reloadServer', () => {
   browserSync.reload();
 });
 
 // css系処理
 // css連結 -> autoprefixer
-gulp.task('css', function() {
+gulp.task('css', () => {
   return gulp.src(config.css.files)
     .pipe($.plumber({
-      errorHandler: function(error) {
+      errorHandler: (error) => {
         notify('css', error);
       }
     }))
@@ -92,10 +92,10 @@ gulp.task('css', function() {
 
 // js系処理
 // es6からes5への変換 -> js連結
-gulp.task('js', ['lint'], function() {
+gulp.task('js', ['lint'], () => {
   return gulp.src(config.js.files)
     .pipe($.plumber({
-      errorHandler: function(error) {
+      errorHandler: (error) => {
         notify('js', error);
       }
     }))
@@ -106,10 +106,10 @@ gulp.task('js', ['lint'], function() {
 });
 
 // jsのlint処理
-gulp.task('lint', function() {
+gulp.task('lint', () => {
   return gulp.src(config.js.files)
     .pipe($.plumber({
-      errorHandler: function(error) {
+      errorHandler: (error) => {
         notify('lint', error);
       }
     }))
@@ -120,7 +120,7 @@ gulp.task('lint', function() {
 });
 
 // bowerで取得したファイルをindex.htmlに挿入
-gulp.task('inject', function() {
+gulp.task('inject', () => {
   return gulp.src(config.html.injectTarget)
     .pipe($.inject(gulp.src(mainBowerFiles()), {
       name: 'inject',
@@ -130,16 +130,16 @@ gulp.task('inject', function() {
 });
 
 // jsとcssのビルド処理
-gulp.task('build', ['js', 'inject', 'css'], function() {});
+gulp.task('build', ['js', 'inject', 'css'], () => {});
 
-gulp.task('watch', function() {
-  gulp.watch('./app/index.html', function() {
+gulp.task('watch', () => {
+  gulp.watch('./app/index.html', () => {
     runSequence('inject', 'reloadServer');
   });
-  gulp.watch(config.js.files, function() {
+  gulp.watch(config.js.files, () => {
     runSequence('js', 'reloadServer');
   });
-  gulp.watch(config.css.files, function() {
+  gulp.watch(config.css.files, () => {
     runSequence('css', 'reloadServer');
   });
 });

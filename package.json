@@ -3,8 +3,11 @@
   "version": "0.0.1",
   "description": "min js app",
   "main": "index.js",
+  "engines": {
+    "node": ">=4.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "bower install",
     "start": "gulp"
   },
   "repository": {
@@ -31,6 +34,6 @@
     "gulp-plumber": "*",
     "main-bower-files": "*",
     "node-notifier": "*",
-    "run-sequence": "^1.1.4"
+    "run-sequence": "*"
   }
 }

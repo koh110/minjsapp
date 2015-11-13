@@ -1,2 +1,4 @@
 node_modules/*
 app/components/*
+app/dist/app.js
+app/dist/style.css
