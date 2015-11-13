@@ -5,6 +5,7 @@ var $ = require('gulp-load-plugins')();
 var mainBowerFiles = require('main-bower-files');
 var browserSync =require('browser-sync');
 var notifier = require('node-notifier');
+var runSequence = require('run-sequence');
 
 // 設定
 var config = {
@@ -132,9 +133,15 @@ gulp.task('inject', function() {
 gulp.task('build', ['js', 'inject', 'css'], function() {});
 
 gulp.task('watch', function() {
-  gulp.watch('./app/index.html', ['reloadServer']);
-  gulp.watch(config.js.files, ['js', 'reloadServer']);
-  gulp.watch(config.css.files, ['css', 'reloadServer']);
+  gulp.watch('./app/index.html', function() {
+    runSequence('inject', 'reloadServer');
+  });
+  gulp.watch(config.js.files, function() {
+    runSequence('js', 'reloadServer');
+  });
+  gulp.watch(config.css.files, function() {
+    runSequence('css', 'reloadServer');
+  });
 });
 
 gulp.task('default', ['build', 'watch', 'server']);

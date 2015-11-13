@@ -1,7 +1,7 @@
 'use strict';
 
-var helloWorld = () => {
+const helloWorld = () => {
   console.log('hello world');
-}
+};
 
 helloWorld();
