@@ -1,13 +1,12 @@
 {
   "name": "minjsapp",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "min js app",
   "main": "index.js",
   "engines": {
     "node": ">=4.0"
   },
   "scripts": {
-    "setup": "bower install",
     "start": "gulp"
   },
   "repository": {
@@ -21,19 +20,17 @@
   },
   "homepage": "https://github.com/koh110/minjsapp",
   "devDependencies": {
-    "bower": "*",
-    "browser-sync": "*",
-    "eslint": "*",
-    "gulp": "*",
-    "gulp-babel": "*",
-    "gulp-concat": "*",
-    "gulp-eslint": "*",
-    "gulp-inject": "*",
-    "gulp-load-plugins": "*",
-    "gulp-pleeease": "*",
-    "gulp-plumber": "*",
-    "main-bower-files": "*",
-    "node-notifier": "*",
-    "run-sequence": "*"
+    "babel-core": "^6.5.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.5.0",
+    "browser-sync": "^2.11.1",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-eslint": "^2.0.0",
+    "gulp-pleeease": "^2.0.2",
+    "gulp-plumber": "^1.1.0",
+    "jquery": "^2.2.1",
+    "node-notifier": "^4.5.0",
+    "webpack": "^1.12.14"
   }
 }

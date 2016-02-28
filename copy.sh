@@ -17,4 +17,4 @@ fi
 
 dirname=`dirname $0`
 
-rsync -ave --exclude '.DS_Store' --exclude '.git' --exclude 'copy.sh' --exclude 'README.md' --exclude 'node_modules' --exclude 'app/components' ${dirname}/ ${1}/
+rsync -ave --exclude '.DS_Store' --exclude '.git' --exclude 'copy.sh' --exclude 'node_modules' ${dirname}/ ${1}/

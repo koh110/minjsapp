@@ -1,4 +1,7 @@
-node_modules/*
+npm-debug
+node_modules
+tmp
+
 app/components/*
-app/dist/app.js
-app/dist/style.css
+app/dist/*
+app/styles/tmp
