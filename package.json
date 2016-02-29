@@ -7,7 +7,9 @@
     "node": ">=4.0"
   },
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "build": "gulp build",
+    "lint": "gulp lint"
   },
   "repository": {
     "type": "git",

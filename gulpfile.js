@@ -7,7 +7,7 @@ const pleeease = require('gulp-pleeease');
 const plumber = require('gulp-plumber');
 const eslint = require('gulp-eslint');
 const webpack = require('webpack');
-const browserSync =require('browser-sync');
+const browserSync = require('browser-sync');
 const notifier = require('node-notifier');
 
 // アプリケーションの配置ディレクトリ
@@ -18,7 +18,7 @@ const config = {
   dist: {
     directory: `${APP_ROOT}/dist`
   },
-  server : {
+  server: {
     port: 8282
   },
   js: {
@@ -27,7 +27,7 @@ const config = {
     ],
     vendor: {
       output: {
-        filename: 'vendor.js',
+        filename: 'vendor.js'
       },
       files: [
         'node_modules/jquery/dist/jquery.min.js'
@@ -92,7 +92,9 @@ const config = {
 const notify = (taskName, error) => {
   const title = `[task]${taskName} ${error.plugin}`;
   const errorMsg = `error: ${error.message}`;
+  /* eslint-disable no-console */
   console.error(`${title}\n${error}`);
+  /* eslint-enable no-console */
   notifier.notify({
     title: title,
     message: errorMsg,
@@ -106,7 +108,7 @@ gulp.task('server', () => {
     port: config.server.port,
     server: {
       baseDir: APP_ROOT,
-      index  : 'index.html'
+      index: 'index.html'
     }
   });
 });
@@ -172,7 +174,9 @@ gulp.task('watch-styles', () => {
 const webpackBuild = (conf, cb) => {
   webpack(conf, (err) => {
     if (err) {
+      /* eslint-disable no-console */
       console.error(err);
+      /* eslint-enable no-console */
       throw err;
     }
     return cb();
