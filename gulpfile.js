@@ -179,7 +179,10 @@ const webpackBuild = (conf, cb) => {
       /* eslint-enable no-console */
       throw err;
     }
-    return cb();
+    if (!cb.called) {
+      cb.called = true;
+      return cb();
+    }
   });
 };
 gulp.task('webpack', ['lint'], (cb) => {
@@ -221,9 +224,12 @@ gulp.task('vendor', () => {
 gulp.task('build', ['vendor', 'webpack', 'styles'], () => {});
 
 gulp.task('watch', ['watch-webpack', 'watch-styles'], () => {
-  gulp.watch(`${APP_ROOT}/index.html`, ['reloadServer']);
-  gulp.watch(`${config.webpack.output.path}/${config.webpack.output.filename}`, ['reloadServer']);
-  gulp.watch(`${config.dist.directory}/${config.style.output.filename}`, ['reloadServer']);
+  // html, js, cssの成果物どれかに変更があったらサーバをリロード
+  gulp.watch([
+    `${APP_ROOT}/index.html`,
+    `${config.webpack.output.path}/${config.webpack.output.filename}`,
+    `${config.dist.directory}/${config.style.output.filename}`
+  ], ['reloadServer']);
 });
 
 gulp.task('default', ['build', 'watch', 'server']);
