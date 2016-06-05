@@ -1,9 +1,12 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 const gulp = require('gulp');
 const concat = require('gulp-concat');
-const pleeease = require('gulp-pleeease');
+const sass = require('node-sass');
+const postcss = require('gulp-postcss');
+const autoprefixer = require('autoprefixer');
 const plumber = require('gulp-plumber');
 const eslint = require('gulp-eslint');
 const webpack = require('webpack');
@@ -73,18 +76,21 @@ const config = {
       buildName: 'concat.css'
     },
     sass: {
+      entry: `${APP_ROOT}/styles/sass/entry.scss`,
       files: [
         `${APP_ROOT}/styles/sass/*.scss`
       ],
       buildName: 'build.css'
     },
-    prefixer: [
-      'last 1 versions',
-      'ie >= 10',
-      'safari >= 8',
-      'ios >= 8',
-      'android >= 4'
-    ]
+    autoprefixer: {
+      browsers: [
+        'last 1 versions',
+        'ie >= 10',
+        'safari >= 8',
+        'ios >= 8',
+        'android >= 4'
+      ]
+    }
   }
 };
 
@@ -94,7 +100,6 @@ const notify = (taskName, error) => {
   const errorMsg = `error: ${error.message}`;
   /* eslint-disable no-console */
   console.error(`${title}\n${error}`);
-  /* eslint-enable no-console */
   notifier.notify({
     title: title,
     message: errorMsg,
@@ -119,7 +124,6 @@ gulp.task('reloadServer', () => {
 });
 
 // css系処理
-// css連結 -> autoprefixer
 gulp.task('css', () => {
   return gulp.src(config.style.css.files)
     .pipe(plumber({
@@ -131,52 +135,51 @@ gulp.task('css', () => {
     .pipe(plumber.stop())
     .pipe(gulp.dest(config.style.output.buildDirectory));
 });
-gulp.task('sass', () => {
-  return gulp.src(config.style.sass.files)
-    .pipe(plumber({
-      errorHandler: (error) => {
-        notify('sass', error);
+// sass compile
+gulp.task('sass', (cb) => {
+  sass.render({
+    file: config.style.sass.entry
+  }, (err, result) => {
+    if (err) {
+      notify('sass', err);
+      return cb(err);
+    }
+    fs.writeFile(`${config.style.output.buildDirectory}/${config.style.sass.buildName}`, result.css, (err) => {
+      if (err) {
+        notify('sass', err);
+        return cb(err);
       }
-    }))
-    .pipe(pleeease({
-      sass: true,
-      minifier: false,
-      out: config.style.sass.buildName
-    }))
-    .pipe(plumber.stop())
-    .pipe(gulp.dest(config.style.output.buildDirectory));
+      cb();
+    });
+  });
 });
+// css連結 -> autoprefixer
 gulp.task('styles', ['css', 'sass'], () => {
   return gulp.src([
     `${config.style.output.buildDirectory}/${config.style.css.buildName}`,
     `${config.style.output.buildDirectory}/${config.style.sass.buildName}`
   ])
-    .pipe(plumber({
-      errorHandler: (error) => {
-        notify('style', error);
-      }
-    }))
-    .pipe(concat(config.style.output.filename))
-    .pipe(pleeease({
-      autoprefixer: {
-        browsers: config.style.prefixer
-      },
-      minifier: false
-    }))
-    .pipe(plumber.stop())
-    .pipe(gulp.dest(config.dist.directory));
+  .pipe(plumber({
+    errorHandler: (error) => {
+      notify('style', error);
+    }
+  }))
+  .pipe(concat(config.style.output.filename))
+  .pipe(postcss([autoprefixer(config.style.autoprefixer)]))
+  .pipe(plumber.stop())
+  .pipe(gulp.dest(config.dist.directory));
 });
 gulp.task('watch-styles', () => {
-  gulp.watch([config.style.css.files, config.style.sass.files], ['styles']);
+  const files = config.style.css.files.concat(config.style.sass.files);
+  gulp.watch(files, ['styles']);
 });
 
 // js系処理
 const webpackBuild = (conf, cb) => {
   webpack(conf, (err) => {
     if (err) {
-      /* eslint-disable no-console */
+      // eslint-disable-next-line no-console
       console.error(err);
-      /* eslint-enable no-console */
       throw err;
     }
     if (!cb.called) {
@@ -221,7 +224,7 @@ gulp.task('vendor', () => {
 });
 
 // jsとcssのビルド処理
-gulp.task('build', ['vendor', 'webpack', 'styles'], () => {});
+gulp.task('build', ['vendor', 'webpack', 'styles']);
 
 gulp.task('watch', ['watch-webpack', 'watch-styles'], () => {
   // html, js, cssの成果物どれかに変更があったらサーバをリロード
