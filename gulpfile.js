@@ -14,81 +14,48 @@ const browserSync = require('browser-sync');
 const notifier = require('node-notifier');
 
 // アプリケーションの配置ディレクトリ
-const APP_ROOT = `${path.resolve(__dirname)}/app`;
+const SRC_PATH = path.resolve(process.env.SRC_PATH);
+const DIST_PATH = path.resolve(process.env.DIST_PATH);
 
 // 設定
 const config = {
-  dist: {
-    directory: `${APP_ROOT}/dist`
-  },
   server: {
-    port: 8282
+    port: 8282,
+    server: {
+      baseDir: DIST_PATH,
+      index: 'index.html'
+    }
   },
   js: {
     files: [
-      `${APP_ROOT}/js/**/*.js`
-    ],
-    vendor: {
-      output: {
-        filename: 'vendor.js'
-      },
-      files: [
-        'node_modules/jquery/dist/jquery.min.js'
-      ]
-    }
-  },
-  webpack: {
-    entry: `${APP_ROOT}/js/app.js`,
-    devtool: '#source-map',
-    output: {
-      path: `${APP_ROOT}/dist`,
-      filename: 'app.js'
-    },
-    externals: {
-      document: 'document',
-      jquery: '$'
-    },
-    resolve: {
-      root: `${APP_ROOT}/js`,
-      extensions: ['', '.js']
-    },
-    module: {
-      loaders: [
-        {
-          test: /\.js$/,
-          loader: 'babel-loader',
-          query: {
-            presets: ['es2015']
-          }
-        }
-      ]
-    }
+      `${SRC_PATH}/js/**/*.js`
+    ]
   },
   style: {
     output: {
-      buildDirectory: `${path.resolve(__dirname)}/tmp`,
+      buildDirectory: path.resolve(__dirname, 'tmp'),
       filename: 'style.css'
     },
     css: {
       files: [
-        `${APP_ROOT}/styles/css/*.css`
+        `${SRC_PATH}/styles/css/*.css`
       ],
       buildName: 'concat.css'
     },
     sass: {
-      entry: `${APP_ROOT}/styles/sass/entry.scss`,
+      entry: `${SRC_PATH}/styles/sass/entry.scss`,
       files: [
-        `${APP_ROOT}/styles/sass/*.scss`
+        `${SRC_PATH}/styles/sass/*.scss`
       ],
       buildName: 'build.css'
     },
     autoprefixer: {
       browsers: [
         'last 1 versions',
-        'ie >= 10',
-        'safari >= 8',
-        'ios >= 8',
-        'android >= 4'
+        'ie >= 11',
+        'safari >= 9',
+        'ios >= 0',
+        'android >= 5'
       ]
     }
   }
@@ -109,13 +76,7 @@ const notify = (taskName, error) => {
 
 // サーバ起動
 gulp.task('server', () => {
-  browserSync({
-    port: config.server.port,
-    server: {
-      baseDir: APP_ROOT,
-      index: 'index.html'
-    }
-  });
+  browserSync(config.server);
 });
 
 // サーバ再起動
@@ -167,7 +128,7 @@ gulp.task('styles', ['css', 'sass'], () => {
   .pipe(concat(config.style.output.filename))
   .pipe(postcss([autoprefixer(config.style.autoprefixer)]))
   .pipe(plumber.stop())
-  .pipe(gulp.dest(config.dist.directory));
+  .pipe(gulp.dest(DIST_PATH));
 });
 gulp.task('watch-styles', () => {
   const files = config.style.css.files.concat(config.style.sass.files);
@@ -189,11 +150,12 @@ const webpackBuild = (conf, cb) => {
   });
 };
 gulp.task('webpack', ['lint'], (cb) => {
-  const conf = config.webpack;
+  const conf = require('./webpack.config');
   webpackBuild(conf, cb);
 });
 gulp.task('watch-webpack', ['lint'], (cb) => {
-  const conf = Object.assign(config.webpack, { watch: true });
+  const _conf = require('./webpack.config');
+  const conf = Object.assign(_conf, { watch: true });
   webpackBuild(conf, cb);
 });
 
@@ -210,28 +172,22 @@ gulp.task('lint', () => {
     .pipe(eslint.failOnError())
     .pipe(plumber.stop());
 });
-// npmで入れたフロントエンドライブラリのconcat処理
-gulp.task('vendor', () => {
-  return gulp.src(config.js.vendor.files)
-    .pipe(plumber({
-      errorHandler: (error) => {
-        notify('vendor', error);
-      }
-    }))
-    .pipe(concat(config.js.vendor.output.filename))
-    .pipe(plumber.stop())
-    .pipe(gulp.dest(config.dist.directory));
+
+gulp.task('html', () => {
+  return gulp.src(`${SRC_PATH}/index.html`)
+    .pipe(gulp.dest(DIST_PATH));
 });
+gulp.task('watch-html', ['html']);
 
 // jsとcssのビルド処理
-gulp.task('build', ['vendor', 'webpack', 'styles']);
+gulp.task('build', ['html', 'webpack', 'styles']);
 
-gulp.task('watch', ['watch-webpack', 'watch-styles'], () => {
+gulp.task('watch', ['watch-html', 'watch-webpack', 'watch-styles'], () => {
   // html, js, cssの成果物どれかに変更があったらサーバをリロード
   gulp.watch([
-    `${APP_ROOT}/index.html`,
-    `${config.webpack.output.path}/${config.webpack.output.filename}`,
-    `${config.dist.directory}/${config.style.output.filename}`
+    `${SRC_PATH}/index.html`,
+    `${DIST_PATH}/*.js`,
+    `${DIST_PATH}/*.css`
   ], ['reloadServer']);
 });
 

@@ -1,7 +1,4 @@
 npm-debug
 node_modules
 tmp
-
-app/components/*
-app/dist/*
-app/styles/tmp
+dist

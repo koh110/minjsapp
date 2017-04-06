@@ -1,6 +1,6 @@
 'use strict';
 
-const $ = require('jquery');
+const $ = require('jquery/dist/jquery.min.js');
 
 const helloWorld = require('hello/world');
 helloWorld();
